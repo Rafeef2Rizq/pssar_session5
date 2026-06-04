@@ -46,3 +46,42 @@ print(f"Q5 opening_variation missing: {q5:.2f}%")
 q6 = df['turns'].min()
 print(f"Q6 Minimum turns: {q6}")
 print("suspicious: a real game needs at least 2 turns")
+
+
+#Stage 2 — Build clean_chess() Pipeline
+
+def clean_chess(df: pd.DataFrame) -> pd.DataFrame:
+
+    # 2a — Parse time_increment
+    df[['time_base', 'time_inc']] = (
+        df['time_increment']
+        .str.split('+', expand=True)
+        .astype(int)
+    )
+
+    # 2b — Add rating_diff
+    df['rating_diff'] = df['white_rating'] - df['black_rating']
+
+    # 2c — Extract opening_family
+    df['opening_family'] = (
+        df['opening_fullname']
+        .str.split(':')
+        .str[0]
+        .str.strip()
+    )
+
+    # 2d — Drop high-null column
+    df = df.drop(columns=['opening_response'])   # drop least useful column
+
+    # 2e — Flag short games
+    df['is_suspicious'] = df['turns'] < 5
+
+    # 2f — Validate
+    assert df['rating_diff'].notna().all(), "rating_diff has nulls!"
+    assert df.duplicated().sum() == 0,      "duplicate rows found!"
+    print("✅ Validation passed")
+    return df
+
+# Run pipeline 
+df = load_data(url, 'data/chess_games.csv')
+df = clean_chess(df)
