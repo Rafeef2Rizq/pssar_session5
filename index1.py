@@ -23,3 +23,26 @@ def load_data(url: str, local_path: str) -> pd.DataFrame:
     return df
 
 df = load_data(url, 'data/diabetes.csv')
+#number of records in the dataset
+num_records = len(df)
+print(f"Number of records in the dataset: {num_records}")
+
+#duplicate rows in the dataset
+num_duplicates = df.duplicated().sum()
+print(f"Number of duplicate rows in the dataset: {num_duplicates}")
+
+# duplicate move sequences in the dataset
+print(f"Q3 Duplicate move sequences: {df.duplicated(subset=['moves']).sum()}")
+
+# missing opening_response values in the dataset
+q4 = df['opening_response'].isna().mean() * 100
+print(f"Q4 opening_response missing: {q4:.2f}%")
+
+#missing opening_variation values in the dataset
+q5 = df['opening_variation'].isna().mean() * 100
+print(f"Q5 opening_variation missing: {q5:.2f}%")
+
+#the minimum number of turns in any game
+q6 = df['turns'].min()
+print(f"Q6 Minimum turns: {q6}")
+print("suspicious: a real game needs at least 2 turns")
