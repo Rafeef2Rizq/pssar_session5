@@ -22,7 +22,7 @@ def load_data(url: str, local_path: str) -> pd.DataFrame:
     print("Data saved locally.")
     return df
 
-df = load_data(url, 'data/diabetes.csv')
+df = load_data(url, 'data/chess_games.csv')
 #number of records in the dataset
 num_records = len(df)
 print(f"Number of records in the dataset: {num_records}")
@@ -83,5 +83,48 @@ def clean_chess(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 # Run pipeline 
-df = load_data(url, 'data/chess_games.csv')
 df = clean_chess(df)
+
+
+#Stage 3 — Analyze clean_chess() Output
+#Q10 win rate for White, Black, and Draw
+win_rates = df['winner'].value_counts(normalize=True) * 100
+for k, v in win_rates.items():
+    print(f"{k}: {v:.2f}%")
+#Q11 most common way games end
+print("Most common:", df['victory_status'].value_counts().idxmax())
+
+#Q12 highest average number of turns
+avg_turns = df.groupby('victory_status')['turns'].mean().sort_values(ascending=False)
+print(avg_turns.round(1).to_string())
+#Q13 opening family is most popular when Black wins
+df['winner'] = df['winner'].str.lower().str.strip()
+
+for pos in ['white', 'black']:
+    top=(df[df['winner']== pos])['opening_family'].value_counts().idxmax()
+    print(f"{pos} top opening family:", top)
+
+
+#Q14 different White win rate than unrated games
+
+q14 = (df.groupby('rated')
+         .apply(lambda x: (x['winner'] == 'white').mean() * 100)
+         .rename({True: 'Rated', False: 'Unrated'}))
+for label, val in q14.items():
+    print(f"    {label}: {val:.2f}%")
+
+#Q15 Short/Medium/Long using apply().
+print("Q15 Game length distribution:")
+def classify_game(turns):
+    if turns < 20:
+        return 'Short'
+    elif turns < 70:
+        return 'Medium'
+    else:
+        return 'Long'
+
+df['game_length'] = df['turns'].apply(classify_game)
+
+length_pct = df['game_length'].value_counts(normalize=True) * 100
+for label, pct in length_pct.items():
+    print(f"    {label}: {pct:.2f}%")
