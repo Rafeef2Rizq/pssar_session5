@@ -81,11 +81,11 @@ python index1.py
 
 ### Q15 — Game Length Distribution
 
-| Length | Turns   | %      |
-| ------ | ------- | ------ |
-| Short  | < 20    | 8.28%  |
-| Medium | 20 – 70 | 58.65% |
-| Long   | ≥ 70    | 33.06% |
+| Length | Turns   | %   |
+| ------ | ------- | --- |
+| Short  | < 20    | 5%  |
+| Medium | 20 – 70 | 63% |
+| Long   | ≥ 70    | 32% |
 
 ---
 
