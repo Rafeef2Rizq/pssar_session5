@@ -1,6 +1,6 @@
----
+# Chess Games Analysis Pipeline
 
-##  Setup
+## Setup
 
 ```bash
 python -m venv venv
@@ -8,7 +8,7 @@ source venv/bin/activate
 pip install pandas matplotlib numpy
 ```
 
-##  Run
+## Run
 
 ```bash
 python index1.py
